@@ -30,3 +30,12 @@ desktop.ini
 
 # Chrome profiles (Playwright)
 *.pw_profile/
+
+# Local credentials, browser sessions and raw collection output
+.env.*
+!.env.example
+data/*_auth.json
+data/*_profile/
+data/*_debug.*
+data/raw_*.json
+cookies*.json
