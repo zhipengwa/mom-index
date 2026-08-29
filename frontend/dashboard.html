@@ -82,7 +82,7 @@ body {
 }
 .chart-box h3 { font-size: 16px; margin-bottom: 16px; color: #e2e8f0; }
 
-/* Top 小白帖 */
+/* 公开样本文本示例 */
 .top-posts {
   background: #1e293b;
   border: 1px solid #334155;
@@ -134,7 +134,7 @@ body {
 
 <div class="header">
   <h1>👩‍👧 宝妈指数</h1>
-  <div class="subtitle">当小白开始讨论投资，就是该警惕的时候</div>
+  <div class="subtitle">聚合历史公开样本文本，展示宝妈主题的讨论热度与表达结构</div>
   <div class="subtitle" id="update-time" style="margin-top:4px"></div>
 </div>
 
@@ -158,17 +158,17 @@ body {
     <div class="chart-box"><h3>💾 半导体 — 宝妈指数走势</h3><canvas id="chart-semiconductor"></canvas></div>
   </div>
 
-  <!-- Top 小白帖 -->
+  <!-- 公开样本文本示例 -->
   <div class="top-posts" id="top-posts">
-    <h3>🔥 今日最"小白"的帖子</h3>
+    <h3>公开样本文本示例</h3>
     <div class="loading">加载中...</div>
   </div>
 </div>
 
 <div class="footer">
   宝妈指数 Framework v0.1 — 当前展示为脱敏合成数据<br>
-  指数越高 = 示例规则识别到的新手讨论越活跃；仅供框架演示<br>
-  <span style="color:#64748b">⚠️ 仅供参考，不构成投资建议</span>
+  指数仅展示历史公开样本文本的讨论热度与表达结构；仅供框架演示<br>
+  <span style="color:#64748b">指标基于历史公开帖子和评论中的文本表达进行聚合，只描述公开样本的历史讨论热度，不代表全体投资者，也不是实际成交、持仓或资金流数据；不具备价格预测、投资品种选择或买卖时机建议功能。</span>
 </div>
 
 <script>
@@ -202,6 +202,14 @@ function getEmoji(idx) {
   return '🔵';
 }
 
+function getHeatLabel(idx) {
+  if (idx >= 75) return '样本讨论热度很高';
+  if (idx >= 60) return '样本讨论热度较高';
+  if (idx >= 40) return '样本讨论热度中等';
+  if (idx >= 20) return '样本讨论热度偏低';
+  return '样本讨论热度较低';
+}
+
 function renderCards(data) {
   const container = document.getElementById('cards');
   const latest = data.latest;
@@ -220,32 +228,32 @@ function renderCards(data) {
       <div class="card ${key}">
         <div class="sector-name">${getEmoji(sector.index)} ${SECTOR_NAMES[key]}</div>
         <div class="index-value">${sector.index}</div>
-        <div class="index-label">宝妈指数</div>
-        <div class="signal ${cls}">${sector.interpretation}</div>
+        <div class="index-label">公开样本讨论热度</div>
+        <div class="signal ${cls}">${getHeatLabel(sector.index)}</div>
         <!-- 买入/卖出子指数 -->
         <div style="margin-top:14px; display:flex; gap:8px;">
           <div style="flex:1; background:rgba(34,197,94,0.08); border-radius:8px; padding:8px; text-align:center;">
             <div style="font-size:20px; font-weight:700; color:#4ade80;">${d.mom_buy_index ?? 0}</div>
-            <div style="font-size:10px; color:#64748b;">🟢 宝妈买入</div>
+            <div style="font-size:10px; color:#64748b;">样本买入表达</div>
           </div>
           <div style="flex:1; background:rgba(239,68,68,0.08); border-radius:8px; padding:8px; text-align:center;">
             <div style="font-size:20px; font-weight:700; color:#f87171;">${d.mom_sell_index ?? 0}</div>
-            <div style="font-size:10px; color:#64748b;">🔴 宝妈卖出</div>
+            <div style="font-size:10px; color:#64748b;">样本卖出表达</div>
           </div>
         </div>
-        <!-- 买卖比进度条 -->
+        <!-- 样本表达结构进度条 -->
         <div style="margin-top:8px; display:flex; align-items:center; gap:6px; font-size:10px; color:#64748b;">
-          <span>卖出 ${d.sell_count||0}</span>
+          <span>卖出表达 ${d.sell_count||0}</span>
           <div style="flex:1; height:5px; background:#2d1f1f; border-radius:3px; overflow:hidden; display:flex;">
             <div style="width:${(d.buy_count||0)/(Math.max(d.buy_count||0, d.sell_count||0, 1))*100}%; height:100%; background:linear-gradient(90deg,#22c55e,#4ade80);"></div>
           </div>
-          <span>买入 ${d.buy_count||0}</span>
+          <span>买入表达 ${d.buy_count||0}</span>
         </div>
         <div class="detail-row">
-          <span>小白帖</span><span>${d.newbie_posts || 0}/${d.valid_posts || d.total_posts || 0} (${d.newbie_ratio || 0}%)</span>
+          <span>目标样本文本</span><span>${d.newbie_posts || 0}/${d.valid_posts || d.total_posts || 0} (${d.newbie_ratio || 0}%)</span>
         </div>
         <div class="detail-row">
-          <span>买卖比</span><span style="color:${(d.buy_sell_ratio||0)>1.5?'#f87171':(d.buy_sell_ratio||0)>0.8?'#facc15':'#4ade80'}">${d.buy_sell_ratio||0}:1 ${(d.buy_sell_ratio||0)>1.5?'🔥追涨':(d.buy_sell_ratio||0)>0.8?'⚖️平衡':'🩸恐慌'}</span>
+          <span>样本表达比</span><span style="color:#cbd5e1">${d.buy_sell_ratio||0}:1</span>
         </div>
       </div>
     `;
@@ -321,7 +329,7 @@ function renderTopPosts(data) {
     return;
   }
 
-  // 从所有板块收集 top 小白帖
+  // 从所有板块收集公开样本文本示例
   let allTop = [];
   Object.entries(latest.sectors).forEach(([sector, sdata]) => {
     (sdata.top_newbie_posts || []).forEach(p => {
@@ -334,23 +342,21 @@ function renderTopPosts(data) {
   allTop = allTop.slice(0, 8);
 
   if (!allTop.length) {
-    container.innerHTML += '<div class="loading">今日暂无典型小白帖</div>';
+    container.innerHTML += '<div class="loading">今日暂无样本文本示例</div>';
     return;
   }
 
   const badgeClass = score => score >= 50 ? 'pure' : 'semi';
-  const badgeText = score => score >= 50 ? '纯小白' : '偏小白';
+  const badgeText = score => score >= 50 ? '高匹配文本' : '一般匹配文本';
 
   container.innerHTML += allTop.map(p => `
   <div class="post-item">
     <div class="post-title">
       <span class="post-badge ${badgeClass(p.score)}">${badgeText(p.score)} ${p.score}分</span>
       <span style="color:#64748b;font-size:11px">[${p.sector}]</span>
-      ${p.intent_label ? `<span style="font-size:11px;margin-left:4px">${p.intent_label}</span>` : ''}
-      ${p.title}
+      <span style="font-size:11px;margin-left:4px">历史公开样本文本</span>
     </div>
-    ${p.reasoning ? `<div class="post-reason">📝 ${p.reasoning}</div>` : ''}
-    ${p.key_signals ? p.key_signals.map(s => `<div class="post-meta">▸ ${s}</div>`).join('') : ''}
+    <div class="post-reason">该样本文本已纳入历史公开讨论热度统计。</div>
   </div>
   `).join('');
 }
